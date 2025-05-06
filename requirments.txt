@@ -1,0 +1,15 @@
+pandas
+wandb
+pyarrow
+google-cloud-bigquery
+google-cloud-storage
+jsonargparse
+tqdm
+transformers
+boto3
+numpy==1.26.0
+watchtower
+flask
+flask-cors
+fastapi
+uvicorn

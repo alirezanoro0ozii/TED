@@ -24,6 +24,12 @@ def encode_sequence(sequence, max_seq_len):
     else:
         return [char_to_idx.get(char, 0) for char in sequence] + [0 for _ in range(max_seq_len - len(sequence))]  # 0 for unknown characters or padding 
 
+def get_attention_mask(sequence, max_seq_len):
+    if len(sequence) > max_seq_len:
+        return [1 for char in sequence]
+    else:
+        return [1 for char in sequence] + [0 for _ in range(max_seq_len - len(sequence))]  # 0 for padding 
+
 esm_tokenizer = AutoTokenizer.from_pretrained(f"facebook/esm1b_t33_650M_UR50S")
 def esm_encode_sequence(sequence):
     return esm_tokenizer(
@@ -61,4 +67,5 @@ def chop_indices(chopping, max_seq_len):
 def data_to_tensor_batch(b, max_seq_len):
     seq_inputs = torch.LongTensor([encode_sequence(e['Sequence'], max_seq_len) for e in b if e['Sequence'] is not None])
     domain_inputs = torch.LongTensor([chop_indices(e['chopping_star'], max_seq_len) for e in b if e['Sequence'] is not None])
+    attention_masks = torch.LongTensor([get_attention_mask(e['Sequence'], max_seq_len) for e in b if e['Sequence'] is not None])
     return Batch(seq_inputs, domain_inputs)
